@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
 import logo from '../assets/argentBankLogo.png'
 import userLogo from '../assets/circle-user-solid.svg'
@@ -20,6 +21,7 @@ const StyledSignIn = styled.div`
     display: flex;
     margin-right: 25px;
     align-items: center;
+    font-weight: bold;
 `
 
 const StyledUserLogo = styled.img`
@@ -33,10 +35,12 @@ function Header() {
     }
     return (
         <StyledHeader>
-            <StyledLogo src={logo} />
+            <Link to="/">
+                <StyledLogo src={logo} />
+            </Link>
             <StyledSignIn onClick={() => handleClick()}>
                 <StyledUserLogo src={userLogo} />
-                Sign in
+                <p>Sign in</p>
             </StyledSignIn>
         </StyledHeader>
     )
