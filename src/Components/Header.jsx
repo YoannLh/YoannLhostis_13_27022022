@@ -17,11 +17,13 @@ const StyledLogo = styled.img`
     margin-left: 25px;
 `
 
-const StyledSignIn = styled.div`
+const StyledSignIn = styled(Link)`
     display: flex;
     margin-right: 25px;
     align-items: center;
     font-weight: bold;
+    text-decoration: none;
+    color: black;
 `
 
 const StyledUserLogo = styled.img`
@@ -30,15 +32,12 @@ const StyledUserLogo = styled.img`
 `
 
 function Header() {
-    const handleClick = () => {
-        console.log('click')
-    }
     return (
         <StyledHeader>
             <Link to="/">
                 <StyledLogo src={logo} />
             </Link>
-            <StyledSignIn onClick={() => handleClick()}>
+            <StyledSignIn to="/authentication">
                 <StyledUserLogo src={userLogo} />
                 <p>Sign in</p>
             </StyledSignIn>
