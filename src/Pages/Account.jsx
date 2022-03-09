@@ -1,6 +1,8 @@
 import axios from 'axios'
 import styled from 'styled-components'
 
+import Details from '../Components/Details'
+
 const StyledHero = styled.div`
     display: flex;
     flex-direction: column;
@@ -41,6 +43,9 @@ function Account() {
                 Loulou loulou
             </p>
             <StyledButton>Edit Name</StyledButton>
+            <Details />
+            <Details />
+            <Details />
         </StyledHero>
     )
 }

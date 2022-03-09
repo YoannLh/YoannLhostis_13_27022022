@@ -1,3 +1,6 @@
+import axios from 'axios'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import userLogo from '../assets/circle-user-solid.svg'
@@ -54,31 +57,91 @@ const StyledRadioParagraph = styled.p`
     margin: 0;
 `
 
-const StyledButton = styled.button`
+const StyledButton = styled(Link)`
     width: 75%;
     height: 40px;
     margin: 20px auto;
     background: rgb(95, 189, 121);
     color: white;
     border: 0;
+    text-align: center;
     font-size: 1.1em;
 `
 
+let email = ''
+let password = ''
+let token = ''
+
+function postIdsAndGetToken(email, password) {
+    console.log(email, password)
+    axios
+        .post('http://localhost:3001/api/v1/user/login', {
+            email: email,
+            password: password,
+        })
+        .then(function (response) {
+            console.log(response)
+            token = response.data.body.token
+            console.log('token : ' + token)
+            postTokenAndGetUserInfos(token)
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
+}
+
+function postTokenAndGetUserInfos(token) {
+    axios
+        .post(
+            'http://localhost:3001/api/v1/user/profile',
+            {},
+            {
+                headers: {
+                    authorization: token,
+                },
+            }
+        )
+        .then(function (response) {
+            console.log('rep : ', response)
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
+}
+
+const handleChangeEmail = (event) => {
+    email = event.target.value
+}
+const handleChangePassword = (event) => {
+    password = event.target.value
+}
+function handleClickButton(event) {
+    postIdsAndGetToken(email, password)
+}
+
 function Authentication() {
+    const [authenticated, setAuth] = useState(true)
     return (
         <StyledHero>
             <StyledForm>
                 <StyledUserLogo src={userLogo} />
                 <StyledTitle>Sign In</StyledTitle>
                 <StyledLabel>Username</StyledLabel>
-                <StyledInput />
+                <StyledInput onChange={(event) => handleChangeEmail(event)} />
                 <StyledLabel>Password</StyledLabel>
-                <StyledInput />
+                <StyledInput
+                    onChange={(event) => handleChangePassword(event)}
+                />
                 <StyledContainerRadio>
                     <input type="checkbox" />
                     <StyledRadioParagraph>Remember Me</StyledRadioParagraph>
                 </StyledContainerRadio>
-                <StyledButton>Sign In</StyledButton>
+                <StyledButton
+                    onClick={(event) => handleClickButton(event)}
+                    to={authenticated ? '/account' : '/authentication'}
+                >
+                    Sign In
+                </StyledButton>
             </StyledForm>
         </StyledHero>
     )
