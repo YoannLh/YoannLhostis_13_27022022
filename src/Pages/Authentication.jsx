@@ -1,7 +1,8 @@
 import axios from 'axios'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { useDispatch, useSelector, useStore } from 'react-redux'
 
 import userLogo from '../assets/circle-user-solid.svg'
 
@@ -120,7 +121,22 @@ function handleClickButton(event) {
 }
 
 function Authentication() {
+    const [rememberMe, setRememberMer] = useState(false)
     const [authenticated, setAuth] = useState(true)
+    const store = useStore()
+    const dispatch = useDispatch()
+    useEffect(() => {
+        if (rememberMe) {
+            //const getUserData = useSelector((state) => state.users)
+        }
+        if (!rememberMe) {
+            //dispatch({ type: '' })
+        }
+    })
+    function handleClickRememberMe() {
+        setRememberMer(rememberMe ? false : true)
+        dispatch({ type: 'rememberMe' })
+    }
     return (
         <StyledHero>
             <StyledForm>
@@ -133,7 +149,10 @@ function Authentication() {
                     onChange={(event) => handleChangePassword(event)}
                 />
                 <StyledContainerRadio>
-                    <input type="checkbox" />
+                    <input
+                        type="checkbox"
+                        onClick={() => handleClickRememberMe()}
+                    />
                     <StyledRadioParagraph>Remember Me</StyledRadioParagraph>
                 </StyledContainerRadio>
                 <StyledButton

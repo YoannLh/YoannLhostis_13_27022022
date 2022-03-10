@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import reportWebVitals from './reportWebVitals'
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Provider } from 'react-redux'
 
 import Home from './Pages/Home'
 import Authentication from './Pages/Authentication'
@@ -10,20 +11,26 @@ import Account from './Pages/Account'
 import Error from './Pages/Error'
 import Header from './Components/Header'
 import Footer from './Components/Footer'
+import { store } from './utils/store'
 
 ReactDOM.render(
-    <React.StrictMode>
-        <BrowserRouter>
-            <Header />
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/authentication" element={<Authentication />} />
-                <Route path="/account" element={<Account />} />
-                <Route path="*" element={<Error />} />
-            </Routes>
-            <Footer />
-        </BrowserRouter>
-    </React.StrictMode>,
+    <Provider store={store}>
+        <React.StrictMode>
+            <BrowserRouter>
+                <Header />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route
+                        path="/authentication"
+                        element={<Authentication />}
+                    />
+                    <Route path="/account" element={<Account />} />
+                    <Route path="*" element={<Error />} />
+                </Routes>
+                <Footer />
+            </BrowserRouter>
+        </React.StrictMode>
+    </Provider>,
     document.getElementById('root')
 )
 
