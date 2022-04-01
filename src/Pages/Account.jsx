@@ -1,6 +1,9 @@
 import styled from 'styled-components'
+import { store } from '../store/store'
 
 import Details from '../Components/Details'
+import { useEffect, useState } from 'react'
+import { useStore } from 'react-redux'
 
 const StyledHero = styled.div`
     display: flex;
@@ -19,6 +22,14 @@ const StyledButton = styled.button`
 `
 
 function Account() {
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
+    useEffect(() => {
+        const data = store.getState()
+        console.log('data in account : ', data)
+        setFirstName(data.user.firstName)
+        setLastName(data.user.lastName)
+    }, [firstName])
     return (
         <StyledHero>
             <p
@@ -39,7 +50,7 @@ function Account() {
                     fontWeight: 'bold',
                 }}
             >
-                Loulou loulou
+                {firstName + ' ' + lastName + ' !'}
             </p>
             <StyledButton>Edit Name</StyledButton>
             <Details />

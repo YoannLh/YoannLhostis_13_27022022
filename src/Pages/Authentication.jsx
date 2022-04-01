@@ -1,10 +1,12 @@
-import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { useDispatch, useSelector, useStore } from 'react-redux'
 
 import userLogo from '../assets/circle-user-solid.svg'
+import Loader from '../Components/Loader'
+import { fetchToken, tokenSelector } from '../slices/tokenSlice'
+import { fetchUser, fetchSelector } from '../slices/userSlice'
 
 const StyledHero = styled.div`
     display: flex;
@@ -50,8 +52,16 @@ const StyledInput = styled.input`
 const StyledContainerRadio = styled.div`
     position: relative;
     top: 15px;
-    left: 30px;
+    left: 35px;
     display: flex;
+`
+
+const StyledRadio = styled.div`
+    width: 10px;
+    height: 10px;
+    margin: auto 5px auto 0;
+    border: 1px solid grey;
+    border-radius: 3px;
 `
 
 const StyledRadioParagraph = styled.p`
@@ -69,100 +79,92 @@ const StyledButton = styled(Link)`
     font-size: 1.1em;
 `
 
-let email = ''
-let password = ''
-let token = ''
-
-function postIdsAndGetToken(email, password) {
-    console.log(email, password)
-    axios
-        .post('http://localhost:3001/api/v1/user/login', {
-            email: email,
-            password: password,
-        })
-        .then(function (response) {
-            console.log(response)
-            token = response.data.body.token
-            console.log('token : ' + token)
-            postTokenAndGetUserInfos(token)
-        })
-        .catch(function (error) {
-            console.log(error)
-        })
-}
-
-function postTokenAndGetUserInfos(token) {
-    axios
-        .post(
-            'http://localhost:3001/api/v1/user/profile',
-            {},
-            {
-                headers: {
-                    authorization: token,
-                },
-            }
-        )
-        .then(function (response) {
-            console.log('rep : ', response)
-        })
-        .catch(function (error) {
-            console.log(error)
-        })
-}
-
-const handleChangeEmail = (event) => {
-    email = event.target.value
-}
-const handleChangePassword = (event) => {
-    password = event.target.value
-}
-function handleClickButton(event) {
-    postIdsAndGetToken(email, password)
-}
-
 function Authentication() {
-    const [rememberMe, setRememberMer] = useState(false)
-    const [authenticated, setAuth] = useState(true)
+    let navigate = useNavigate()
+    const [userMail, setUserMail] = useState('')
+    const [userPassword, setUserPassword] = useState('')
+    const [rememberMe, setRememberMe] = useState(false)
+    const [authenticated, setAuth] = useState(false)
+    const [isLoading, setLoading] = useState(false)
     const store = useStore()
     const dispatch = useDispatch()
+
+    const { token, loading, hasErrors } = useSelector(tokenSelector)
+    const { userLoading, email, firstName, lastName, userHasErrors } =
+        useSelector(fetchSelector)
     useEffect(() => {
+        setRememberMe(
+            localStorage.getItem('rememberMe') === 'true' ? true : false
+        )
+        setUserMail(localStorage.getItem('email'))
+        setUserPassword(localStorage.getItem('password'))
+        //localStorage.clear()
+    }, [])
+    const handleChangeEmail = (event) => {
+        setUserMail(event.target.value)
+    }
+    const handleChangePassword = (event) => {
+        setUserPassword(event.target.value)
+    }
+    function handleClickRememberMe() {
+        setRememberMe(rememberMe === true ? false : true)
+        localStorage.setItem('rememberMe', rememberMe === true ? false : true)
+    }
+
+    function handleClickButton(event) {
+        setLoading(true)
+        dispatch(fetchToken({ mail: userMail, password: userPassword }))
         if (rememberMe) {
-            //const getUserData = useSelector((state) => state.users)
+            localStorage.setItem('email', userMail)
+            localStorage.setItem('password', userPassword)
         }
         if (!rememberMe) {
-            //dispatch({ type: '' })
+            localStorage.setItem('email', '')
+            localStorage.setItem('password', '')
         }
-    })
-    function handleClickRememberMe() {
-        setRememberMer(rememberMe ? false : true)
-        dispatch({ type: 'rememberMe' })
+        if (!userLoading) {
+            setTimeout(() => {
+                navigate('/account')
+            }, 1000)
+        }
     }
     return (
-        <StyledHero>
-            <StyledForm>
-                <StyledUserLogo src={userLogo} />
-                <StyledTitle>Sign In</StyledTitle>
-                <StyledLabel>Username</StyledLabel>
-                <StyledInput onChange={(event) => handleChangeEmail(event)} />
-                <StyledLabel>Password</StyledLabel>
-                <StyledInput
-                    onChange={(event) => handleChangePassword(event)}
-                />
-                <StyledContainerRadio>
-                    <input
-                        type="checkbox"
-                        onClick={() => handleClickRememberMe()}
+        <div>
+            <StyledHero>
+                <StyledForm>
+                    <StyledUserLogo src={userLogo} />
+                    <StyledTitle>Sign In</StyledTitle>
+                    <StyledLabel>Username</StyledLabel>
+                    <StyledInput
+                        onChange={(event) => handleChangeEmail(event)}
+                        value={userMail ? userMail : ''}
                     />
-                    <StyledRadioParagraph>Remember Me</StyledRadioParagraph>
-                </StyledContainerRadio>
-                <StyledButton
-                    onClick={(event) => handleClickButton(event)}
-                    to={authenticated ? '/account' : '/authentication'}
-                >
-                    Sign In
-                </StyledButton>
-            </StyledForm>
-        </StyledHero>
+                    <StyledLabel>Password</StyledLabel>
+                    <StyledInput
+                        onChange={(event) => handleChangePassword(event)}
+                        value={userPassword ? userPassword : ''}
+                    />
+                    <StyledContainerRadio>
+                        <StyledRadio
+                            style={
+                                rememberMe
+                                    ? { background: 'blue' }
+                                    : { background: 'white' }
+                            }
+                            onClick={() => handleClickRememberMe()}
+                        />
+                        <StyledRadioParagraph>Remember Me</StyledRadioParagraph>
+                    </StyledContainerRadio>
+                    <StyledButton
+                        onClick={(event) => handleClickButton(event)}
+                        to={authenticated ? '/account' : '/authentication'}
+                    >
+                        Sign In
+                    </StyledButton>
+                </StyledForm>
+            </StyledHero>
+            {isLoading ? <Loader /> : null}
+        </div>
     )
 }
 

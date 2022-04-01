@@ -11,7 +11,7 @@ import Account from './Pages/Account'
 import Error from './Pages/Error'
 import Header from './Components/Header'
 import Footer from './Components/Footer'
-import { store } from './utils/store'
+import { store } from './store/store'
 
 ReactDOM.render(
     <Provider store={store}>
