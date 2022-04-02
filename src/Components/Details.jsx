@@ -18,7 +18,7 @@ const StyledButtonTransaction = styled.button`
     width: 15%;
     height: 40px;
     margin: auto 0;
-    background: rgb(95, 189, 121);
+
     color: white;
     border: 0;
     text-align: center;
@@ -29,7 +29,7 @@ function handleClick() {
     console.log('View transations')
 }
 
-function Details() {
+function Details(props) {
     return (
         <StyledContainer>
             <StyledContainerAmount>
@@ -39,7 +39,12 @@ function Details() {
                 </p>
                 <p style={{ margin: '0' }}>Available Balance</p>
             </StyledContainerAmount>
-            <StyledButtonTransaction onClick={() => handleClick()}>
+            <StyledButtonTransaction
+                style={{
+                    background: props.modify ? 'purple' : 'rgb(95, 189, 121)',
+                }}
+                onClick={() => handleClick()}
+            >
                 View transactions
             </StyledButtonTransaction>
         </StyledContainer>
