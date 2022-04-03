@@ -62,8 +62,7 @@ function Account() {
         const data = store.getState()
         setFirstName(data.user.firstName)
         setLastName(data.user.lastName)
-    }, [firstName])
-
+    }, [])
     function handleClickToModifyInfos() {
         setModify(!modify)
     }
@@ -71,12 +70,20 @@ function Account() {
         setTempFirstName(event.target.value)
     }
     function handleChangeLastName(event) {
-        setTempFirstName(event.target.value)
+        setTempLastName(event.target.value)
     }
     function handleClickToSaveInfos() {
-        console.log('go to put infos in db')
+        setTempFirstName('')
+        setTempLastName('')
+        if (tempFirstName !== '' && tempLastName !== '') {
+            setFirstName(tempFirstName)
+            setLastName(tempLastName)
+        }
+        setModify(!modify)
     }
     function handleClickToCancelModify() {
+        setTempFirstName('')
+        setTempLastName('')
         setModify(!modify)
     }
     return (
@@ -96,11 +103,13 @@ function Account() {
                     placeholder={firstName}
                     onChange={(event) => handleChangeFirstName(event)}
                     style={{ display: modify ? 'block' : 'none' }}
+                    value={tempFirstName}
                 />
                 <StyledInputsNameInModify
                     placeholder={lastName}
                     onChange={(event) => handleChangeLastName(event)}
                     style={{ display: modify ? 'block' : 'none' }}
+                    value={tempLastName}
                 />
             </StyledContainerModify>
             <StyledContainerModify>
