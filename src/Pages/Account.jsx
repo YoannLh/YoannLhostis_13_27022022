@@ -1,9 +1,10 @@
 import styled from 'styled-components'
 import { store } from '../store/store'
+import { useEffect, useState } from 'react'
 
 import Details from '../Components/Details'
-import { useEffect, useState } from 'react'
-import { useStore } from 'react-redux'
+import Loader from '../Components/Loader'
+import { useDispatch } from 'react-redux'
 
 const StyledHero = styled.div`
     display: flex;
@@ -53,11 +54,13 @@ const StyledButtonsInModify = styled.button`
 `
 
 function Account() {
+    let dispatch = useDispatch()
     const [firstName, setFirstName] = useState('')
     const [tempFirstName, setTempFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [tempLastName, setTempLastName] = useState('')
     const [modify, setModify] = useState(false)
+    const [isLoading, setLoading] = useState(false)
     useEffect(() => {
         const data = store.getState()
         setFirstName(data.user.firstName)
@@ -73,12 +76,14 @@ function Account() {
         setTempLastName(event.target.value)
     }
     function handleClickToSaveInfos() {
+        setLoading(true)
         setTempFirstName('')
         setTempLastName('')
         if (tempFirstName !== '' && tempLastName !== '') {
             setFirstName(tempFirstName)
             setLastName(tempLastName)
         }
+        //dispatch(thunk)
         setModify(!modify)
     }
     function handleClickToCancelModify() {
@@ -87,49 +92,54 @@ function Account() {
         setModify(!modify)
     }
     return (
-        <StyledHero style={{ background: modify ? 'grey' : 'rgb(19, 7, 43)' }}>
-            <StyledWelcome>Welcome back</StyledWelcome>
-            <StyledName style={{ display: modify ? 'none' : 'block' }}>
-                {firstName + ' ' + lastName + ' !'}
-            </StyledName>
-            <StyledButton
-                style={{ display: modify ? 'none' : 'block' }}
-                onClick={() => handleClickToModifyInfos()}
+        <div>
+            {isLoading ? <Loader /> : null}
+            <StyledHero
+                style={{ background: modify ? 'grey' : 'rgb(19, 7, 43)' }}
             >
-                Edit Name
-            </StyledButton>
-            <StyledContainerModify>
-                <StyledInputsNameInModify
-                    placeholder={firstName}
-                    onChange={(event) => handleChangeFirstName(event)}
-                    style={{ display: modify ? 'block' : 'none' }}
-                    value={tempFirstName}
-                />
-                <StyledInputsNameInModify
-                    placeholder={lastName}
-                    onChange={(event) => handleChangeLastName(event)}
-                    style={{ display: modify ? 'block' : 'none' }}
-                    value={tempLastName}
-                />
-            </StyledContainerModify>
-            <StyledContainerModify>
-                <StyledButtonsInModify
-                    onClick={() => handleClickToSaveInfos()}
-                    style={{ display: modify ? 'block' : 'none' }}
+                <StyledWelcome>Welcome back</StyledWelcome>
+                <StyledName style={{ display: modify ? 'none' : 'block' }}>
+                    {firstName + ' ' + lastName + ' !'}
+                </StyledName>
+                <StyledButton
+                    style={{ display: modify ? 'none' : 'block' }}
+                    onClick={() => handleClickToModifyInfos()}
                 >
-                    Save
-                </StyledButtonsInModify>
-                <StyledButtonsInModify
-                    onClick={() => handleClickToCancelModify()}
-                    style={{ display: modify ? 'block' : 'none' }}
-                >
-                    Cancel
-                </StyledButtonsInModify>
-            </StyledContainerModify>
-            <Details modify={modify} />
-            <Details modify={modify} />
-            <Details modify={modify} />
-        </StyledHero>
+                    Edit Name
+                </StyledButton>
+                <StyledContainerModify>
+                    <StyledInputsNameInModify
+                        placeholder={firstName}
+                        onChange={(event) => handleChangeFirstName(event)}
+                        style={{ display: modify ? 'block' : 'none' }}
+                        value={tempFirstName}
+                    />
+                    <StyledInputsNameInModify
+                        placeholder={lastName}
+                        onChange={(event) => handleChangeLastName(event)}
+                        style={{ display: modify ? 'block' : 'none' }}
+                        value={tempLastName}
+                    />
+                </StyledContainerModify>
+                <StyledContainerModify>
+                    <StyledButtonsInModify
+                        onClick={() => handleClickToSaveInfos()}
+                        style={{ display: modify ? 'block' : 'none' }}
+                    >
+                        Save
+                    </StyledButtonsInModify>
+                    <StyledButtonsInModify
+                        onClick={() => handleClickToCancelModify()}
+                        style={{ display: modify ? 'block' : 'none' }}
+                    >
+                        Cancel
+                    </StyledButtonsInModify>
+                </StyledContainerModify>
+                <Details modify={modify} />
+                <Details modify={modify} />
+                <Details modify={modify} />
+            </StyledHero>
+        </div>
     )
 }
 

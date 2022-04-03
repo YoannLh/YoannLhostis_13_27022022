@@ -130,6 +130,7 @@ function Authentication() {
     }
     return (
         <div>
+            {isLoading ? <Loader /> : null}
             <StyledHero>
                 <StyledForm>
                     <StyledUserLogo src={userLogo} />
@@ -163,7 +164,6 @@ function Authentication() {
                     </StyledButton>
                 </StyledForm>
             </StyledHero>
-            {isLoading ? <Loader /> : null}
         </div>
     )
 }
