@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 
 import Details from '../Components/Details'
 import Loader from '../Components/Loader'
+import { fetchModifyUser } from '../slices/modifySlice'
 import { useDispatch } from 'react-redux'
 
 const StyledHero = styled.div`
@@ -55,6 +56,7 @@ const StyledButtonsInModify = styled.button`
 
 function Account() {
     let dispatch = useDispatch()
+    const [token, setToken] = useState()
     const [firstName, setFirstName] = useState('')
     const [tempFirstName, setTempFirstName] = useState('')
     const [lastName, setLastName] = useState('')
@@ -63,6 +65,8 @@ function Account() {
     const [isLoading, setLoading] = useState(false)
     useEffect(() => {
         const data = store.getState()
+        console.log('token in acoount', data.token.token.payload)
+        setToken(data.token.token.payload)
         setFirstName(data.user.firstName)
         setLastName(data.user.lastName)
     }, [])
@@ -77,14 +81,24 @@ function Account() {
     }
     function handleClickToSaveInfos() {
         setLoading(true)
-        setTempFirstName('')
-        setTempLastName('')
         if (tempFirstName !== '' && tempLastName !== '') {
             setFirstName(tempFirstName)
             setLastName(tempLastName)
         }
-        //dispatch(thunk)
-        setModify(!modify)
+        setTempFirstName('')
+        setTempLastName('')
+        console.log(token)
+        dispatch(
+            fetchModifyUser({
+                token: token,
+                firstName: tempFirstName,
+                lastName: tempLastName,
+            })
+        )
+        setTimeout(() => {
+            setModify(!modify)
+            setLoading(false)
+        }, 1000)
     }
     function handleClickToCancelModify() {
         setTempFirstName('')
