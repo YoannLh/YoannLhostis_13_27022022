@@ -56,7 +56,7 @@ const StyledButtonsInModify = styled.button`
 
 function Account() {
     let dispatch = useDispatch()
-    const [token, setToken] = useState()
+    const [token, setToken] = useState('')
     const [firstName, setFirstName] = useState('')
     const [tempFirstName, setTempFirstName] = useState('')
     const [lastName, setLastName] = useState('')
@@ -64,10 +64,19 @@ function Account() {
     const [modify, setModify] = useState(false)
     const [isLoading, setLoading] = useState(false)
     useEffect(() => {
+        console.log(store.getState())
+        if (!store.getState().token.token) {
+            setToken(localStorage.getItem('token'))
+            setFirstName(localStorage.getItem('firstName'))
+            setLastName(localStorage.getItem('lastName'))
+            return
+        }
         const data = store.getState()
-        console.log('token in acoount', data.token.token.payload)
+        localStorage.setItem('token', data.token.token.payload)
         setToken(data.token.token.payload)
+        localStorage.setItem('firstName', data.user.firstName)
         setFirstName(data.user.firstName)
+        localStorage.setItem('lastName', data.user.lastName)
         setLastName(data.user.lastName)
     }, [])
     function handleClickToModifyInfos() {
@@ -83,7 +92,10 @@ function Account() {
         setLoading(true)
         if (tempFirstName !== '' && tempLastName !== '') {
             setFirstName(tempFirstName)
+            localStorage.setItem('firstName', tempFirstName)
             setLastName(tempLastName)
+            localStorage.setItem('lastName', tempLastName)
+            // Ou dispatcher plutôt directement dans le store ?
         }
         setTempFirstName('')
         setTempLastName('')
