@@ -11,6 +11,7 @@ const StyledHero = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: 900px;
     background: rgb(19, 7, 43);
 `
 const StyledWelcome = styled.p`
@@ -21,7 +22,7 @@ const StyledWelcome = styled.p`
 `
 
 const StyledContainerModify = styled.div`
-    display: flex;
+    display: none;
     margin: 20px auto;
 `
 
@@ -34,7 +35,8 @@ const StyledName = styled.p`
 
 const StyledButton = styled.button`
     height: 30px;
-    margin: auto;
+    width: 100px;
+    margin: 0 auto;
     padding: 5px;
     background: rgb(95, 189, 121);
     color: white;
@@ -133,7 +135,9 @@ function Account() {
                 >
                     Edit Name
                 </StyledButton>
-                <StyledContainerModify>
+                <StyledContainerModify
+                    style={{ display: modify ? 'flex' : 'none' }}
+                >
                     <StyledInputsNameInModify
                         placeholder={firstName}
                         onChange={(event) => handleChangeFirstName(event)}
@@ -147,7 +151,9 @@ function Account() {
                         value={tempLastName}
                     />
                 </StyledContainerModify>
-                <StyledContainerModify>
+                <StyledContainerModify
+                    style={{ display: modify ? 'flex' : 'none' }}
+                >
                     <StyledButtonsInModify
                         onClick={() => handleClickToSaveInfos()}
                         style={{ display: modify ? 'block' : 'none' }}

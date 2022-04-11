@@ -13,6 +13,12 @@ const StyledHero = styled.div`
     width: 100%;
     height: 560px;
     background: rgb(19, 7, 43);
+    @media screen and (max-width: 850px) {
+        height: 880px;
+    }
+    @media screen and (max-width: 450px) {
+        height: 700px;
+    }
 `
 
 const StyledForm = styled.form`
@@ -22,6 +28,14 @@ const StyledForm = styled.form`
     height: 380px;
     margin: 50px auto;
     background: white;
+    @media screen and (max-width: 850px) {
+        width: 35%;
+        height: 420px;
+        margin: auto;
+    }
+    @media screen and (max-width: 450px) {
+        width: 70%;
+    }
 `
 
 const StyledUserLogo = styled.img`
